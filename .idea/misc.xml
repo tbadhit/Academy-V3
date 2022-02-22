@@ -3,12 +3,14 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../../../layout/custom_preview.xml" value="0.16296296296296298" />
         <entry key="app/src/main/res/drawable/bg_button.xml" value="0.19166666666666668" />
         <entry key="app/src/main/res/drawable/bg_button_disable.xml" value="0.19166666666666668" />
         <entry key="app/src/main/res/drawable/ic_bookmark_selector.xml" value="0.19166666666666668" />
         <entry key="app/src/main/res/drawable/ic_error.xml" value="0.19166666666666668" />
         <entry key="app/src/main/res/drawable/ic_loading.xml" value="0.19166666666666668" />
         <entry key="app/src/main/res/drawable/ic_share_blue.xml" value="0.19166666666666668" />
+        <entry key="app/src/main/res/layout-sw600dp/activity_course_reader.xml" value="0.14921875" />
         <entry key="app/src/main/res/layout/activity_course_reader.xml" value="0.19947916666666668" />
         <entry key="app/src/main/res/layout/activity_detail_course.xml" value="0.19947916666666668" />
         <entry key="app/src/main/res/layout/activity_home.xml" value="0.19947916666666668" />
@@ -21,6 +23,7 @@
         <entry key="app/src/main/res/layout/items_bookmark.xml" value="0.19947916666666668" />
         <entry key="app/src/main/res/layout/items_module_list.xml" value="0.14075350614312288" />
         <entry key="app/src/main/res/layout/items_module_list_custom.xml" value="0.18279591851050778" />
+        <entry key="app/src/main/res/menu/menu_detail.xml" value="0.1" />
       </map>
     </option>
   </component>

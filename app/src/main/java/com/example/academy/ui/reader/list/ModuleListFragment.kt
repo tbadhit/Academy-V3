@@ -6,15 +6,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.academy.data.ModuleEntity
+import com.example.academy.data.source.local.entity.ModuleEntity
 import com.example.academy.databinding.FragmentModuleListBinding
+import com.example.academy.viewmodel.ViewModelFactory
 import com.example.academy.ui.reader.CourseReaderActivity
 import com.example.academy.ui.reader.CourseReaderCallback
 import com.example.academy.ui.reader.CourseReaderViewModel
-import com.example.academy.utils.DataDummy
+import com.example.academy.vo.Status
 
 class ModuleListFragment : Fragment(), ModuleListAdapter.MyAdapterClickListener {
 
@@ -27,7 +29,7 @@ class ModuleListFragment : Fragment(), ModuleListAdapter.MyAdapterClickListener 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         fragmentModuleListBinding = FragmentModuleListBinding.inflate(inflater, container, false)
         return fragmentModuleListBinding.root
@@ -35,10 +37,26 @@ class ModuleListFragment : Fragment(), ModuleListAdapter.MyAdapterClickListener 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        viewModel = ViewModelProvider(requireActivity(), ViewModelProvider.NewInstanceFactory())[CourseReaderViewModel::class.java]
+        val factory = ViewModelFactory.getInstance(requireContext())
+        viewModel = ViewModelProvider(requireActivity(), factory)[CourseReaderViewModel::class.java]
         adapter = ModuleListAdapter(this)
-        populateRecyclerView(viewModel.getModules())
+
+        viewModel.modules.observe(viewLifecycleOwner) { moduleEntities ->
+            if (moduleEntities != null) {
+                when (moduleEntities.status) {
+                    Status.LOADING -> fragmentModuleListBinding.progressBar.visibility =
+                        View.VISIBLE
+                    Status.SUCCESS -> {
+                        fragmentModuleListBinding.progressBar.visibility = View.GONE
+                        populateRecyclerView(moduleEntities.data as List<ModuleEntity>)
+                    }
+                    Status.ERROR -> {
+                        fragmentModuleListBinding.progressBar.visibility = View.GONE
+                        Toast.makeText(context, "Terjadi kesalahan", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
     }
 
     override fun onAttach(context: Context) {
@@ -53,7 +71,8 @@ class ModuleListFragment : Fragment(), ModuleListAdapter.MyAdapterClickListener 
             rvModule.layoutManager = LinearLayoutManager(context)
             rvModule.setHasFixedSize(true)
             rvModule.adapter = adapter
-            val dividerItemDecoration = DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
+            val dividerItemDecoration =
+                DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
             rvModule.addItemDecoration(dividerItemDecoration)
         }
     }

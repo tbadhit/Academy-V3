@@ -1,9 +1,12 @@
 package com.example.academy.ui.academy
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.example.academy.data.CourseEntity
-import com.example.academy.utils.DataDummy
+import androidx.paging.PagedList
+import com.example.academy.data.AcademyRepository
+import com.example.academy.data.source.local.entity.CourseEntity
+import com.example.academy.vo.Resource
 
-class AcademyViewModel: ViewModel() {
-    fun getCourses(): List<CourseEntity> = DataDummy.generateDummyCourses()
+class AcademyViewModel(private val academyRepository: AcademyRepository): ViewModel() {
+    fun getCourses(): LiveData<Resource<PagedList<CourseEntity>>> = academyRepository.getAllCourse()
 }

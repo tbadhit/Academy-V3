@@ -1,27 +1,35 @@
 package com.example.academy.ui.detail
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import com.example.academy.data.CourseEntity
-import com.example.academy.data.ModuleEntity
-import com.example.academy.utils.DataDummy
+import com.example.academy.data.AcademyRepository
+import com.example.academy.data.source.local.entity.CourseWithModule
+import com.example.academy.vo.Resource
 
-class DetailCourseViewModel: ViewModel() {
-    private lateinit var courseId: String
+class DetailCourseViewModel(private val academyRepository: AcademyRepository): ViewModel() {
+    val courseId = MutableLiveData<String>()
 
     fun setSelectedCourse(courseId: String) {
-        this.courseId = courseId
+        this.courseId.value = courseId
     }
 
-    fun getCourse(): CourseEntity {
-        lateinit var course: CourseEntity
-        val coursesEntities = DataDummy.generateDummyCourses()
-        for (courseEntity in coursesEntities) {
-            if (courseEntity.courseId == courseId) {
-                course = courseEntity
+    // Transformations.switchMap digunakan untuk mengambil data setiap kali courseId-nya berubah
+    var courseModule: LiveData<Resource<CourseWithModule>> = Transformations.switchMap(courseId) { mCourseId ->
+        academyRepository.getCourseWithModule(mCourseId)
+    }
+
+    fun setBookmark() {
+        val moduleResource = courseModule.value
+        if (moduleResource != null) {
+            val courseWithModule = moduleResource.data
+
+            if (courseWithModule != null) {
+                val courseEntity = courseWithModule.mCourse
+                val newState = !courseEntity.bookmarked
+                academyRepository.setCourseBookmark(courseEntity, newState)
             }
         }
-        return course
     }
-
-    fun getModules(): List<ModuleEntity> = DataDummy.generateDummyModules(courseId)
 }
